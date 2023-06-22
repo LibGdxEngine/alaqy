@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:global(body) {
+  direction: rtl;
+}
+
+:global(h1),
+:global(h2),
+:global(h3),
+:global(h4),
+:global(h5),
+:global(h6),
+:global(p),
+:global(a),
+:global(button),
+:global(input),
+:global(textarea),
+:global(select) {
+  text-align: right;
+}
