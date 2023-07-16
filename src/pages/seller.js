@@ -154,7 +154,7 @@ const Seller = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [fetchRequests]);
 
   const token = getCookie("token");
 
@@ -272,7 +272,10 @@ const Seller = () => {
               ></textarea>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2" htmlFor="category">
+              <label
+                className="block text-gray-700 font-bold mb-2"
+                htmlFor="category"
+              >
                 السعر بالجنيه المصري
               </label>
               <div className="relative">
@@ -337,6 +340,7 @@ const Seller = () => {
               messages.map((message) => {
                 return (
                   <Article
+                    key={message._id}
                     title={`${message.price}`}
                     img={article4}
                     date={`April 22, 2023`}

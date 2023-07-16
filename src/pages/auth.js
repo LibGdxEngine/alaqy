@@ -31,7 +31,7 @@ const Auth = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [router]);
 
   const handleChange = (e) => {
     const { name, value } = event.target;

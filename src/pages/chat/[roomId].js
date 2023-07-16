@@ -30,7 +30,7 @@ const Chat = () => {
   useEffect(() => {
     const roomId = router.query.roomId;
     fetchRoom(roomId);
-  }, []);
+  }, [ router.query.roomId]);
 
   useEffect(() => {
     fetchUser();
