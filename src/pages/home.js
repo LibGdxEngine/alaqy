@@ -159,7 +159,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchRequests();
-  });
+  },[fetchRequests]);
 
   const token = getCookie("token");
 
