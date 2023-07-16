@@ -154,7 +154,7 @@ const Seller = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, [fetchRequests]);
+  });
 
   const token = getCookie("token");
 
