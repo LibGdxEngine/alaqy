@@ -1,5 +1,5 @@
 import fetch from "isomorphic-fetch";
-// import cookie from "js-cookie";
+import cookie from "js-cookie";
 // import { API } from "../config";
 import { API } from "../../config";
 // import Router from "next/router";
@@ -36,7 +36,7 @@ export const createIDphoto = (token, user) => {
 };
 
 export const signup = (user) => {
-  return fetch(`http://localhost:8000/api/signup`, {
+  return fetch(`${API}/api/signup`, {
     method: "POST",
     headers: {
       Accept: "application/json",

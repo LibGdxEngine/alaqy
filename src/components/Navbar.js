@@ -13,7 +13,8 @@ import {
 } from "./Icons";
 import { motion } from "framer-motion";
 import useThemeSwitcher from "./hooks/useThemeSwitcher";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { isAuth } from "@/actions/auth";
 
 const CustomLink = ({ href, title, className = "" }) => {
   const router = useRouter();
@@ -64,6 +65,18 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
 };
 
 const Navebar = (props) => {
+  const onLogoClick = props.onLogoClick;
+  const router = useRouter();
+  const [userSignedIn, setUserSignedIn] = useState(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await isAuth();
+      if (user) {
+        setUserSignedIn(true);
+      }
+    };
+    fetchUser();
+  }, []);
   const [mode, setMode] = useThemeSwitcher();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -100,7 +113,12 @@ const Navebar = (props) => {
 
       <div className="w-full flex items-center justify-between lg:hidden">
         <nav>
-          <CustomLink href={`/auth`} title={"تسجيل"} className="ml-4" />
+          {!userSignedIn && (
+            <CustomLink href={`/auth`} title={"تسجيل"} className="ml-4" />
+          )}
+          {userSignedIn && (
+            <CustomLink href={`/home`} title={"طلباتي"} className="ml-4" />
+          )}
           {/* <CustomLink href={`/projects`} title={"برامجنا"} className="mx-4" /> */}
           <CustomLink href={`/about`} title={"من نحن"} className="mx-4" />
           <CustomLink href={`/`} title={"الصفحة الرئيسية"} />
@@ -262,7 +280,7 @@ const Navebar = (props) => {
         </motion.div>
       ) : null}
       <div className="absolute left-[50%] top-2 translate-x-[-50%] sm:top-0">
-        {/* <Logo /> */}
+        <Logo onClick={onLogoClick} />
       </div>
     </header>
   );

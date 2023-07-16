@@ -2,10 +2,19 @@ import Layout from "@/components/Layout";
 import Image from "next/image";
 import profilePic from "../../public/images/OIG.jpg";
 import TransitionEffect from "@/components/TransitionEffect";
-import { useState } from "react";
-import { signup, signin, forgotPassword } from "@/actions/auth";
+import { useEffect, useState } from "react";
+import {
+  signup,
+  signin,
+  forgotPassword,
+  authenticate,
+  isAuth,
+} from "@/actions/auth";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const Auth = () => {
+  const router = useRouter();
   const [authState, setAuthState] = useState("signin");
   const [inputValues, setInputValues] = useState({
     email: "",
@@ -14,13 +23,22 @@ const Auth = () => {
     phone: "",
   });
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await isAuth();
+      if (user) {
+        router.replace("/home");
+      }
+    };
+    fetchUser();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = event.target;
     setInputValues((prevInputValues) => ({
       ...prevInputValues,
       [name]: value,
     }));
-    console.log(inputValues);
   };
 
   const handleReset = () => {
@@ -34,13 +52,44 @@ const Auth = () => {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    signup({ ...inputValues }).then((err, data) => {
-      console.log(err);
-      console.log(data);
+    signup({ ...inputValues }).then((data) => {
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        toast.success(data.message);
+      }
     });
   };
-  const handleSignin = () => {};
-  const handleForgetPassword = () => {};
+  const handleSignin = (e) => {
+    e.preventDefault();
+    signin({ ...inputValues }).then((data) => {
+      if (data) {
+        if (data.error) {
+          toast.error(data.error);
+        }
+
+        if (data.user) {
+          authenticate(data, () => {
+            toast.success("تم التسجيل بنجاح");
+            if(data.user.role === 0){
+              router.push("/home");
+            }else if(data.user.role === 1){
+              router.push("/seller");
+            }
+          
+          });
+        }
+      }
+    });
+  };
+
+  const handleForgetPassword = (e) => {
+    e.preventDefault();
+    forgotPassword({ ...inputValues }).then((data) => {
+      toast.success(data.message);
+    });
+  };
+
   return (
     <>
       <TransitionEffect />
@@ -106,6 +155,7 @@ const Auth = () => {
                       />
                     </svg>
                     <input
+                      onChange={handleChange}
                       id="email"
                       className=" pl-2 w-full outline-none border-none"
                       type="email"
@@ -127,6 +177,7 @@ const Auth = () => {
                       />
                     </svg>
                     <input
+                      onChange={handleChange}
                       className="pl-2 w-full outline-none border-none"
                       type="password"
                       name="password"
@@ -305,7 +356,11 @@ const Auth = () => {
           {authState === "reset" && (
             <div className="flex w-full lg:w-fulljustify-center items-center bg-white space-y-8">
               <div className="w-full px-8 md:px-8 lg:px-24 sm:px-0">
-                <form dir="rtl" className="bg-white rounded-md shadow-2xl p-5">
+                <form
+                  onSubmit={handleForgetPassword}
+                  dir="rtl"
+                  className="bg-white rounded-md shadow-2xl p-5"
+                >
                   <h1 className="text-gray-800 font-bold text-2xl mb-1">
                     أهلا بيك
                   </h1>
@@ -328,6 +383,7 @@ const Auth = () => {
                       />
                     </svg>
                     <input
+                      onChange={handleChange}
                       id="email"
                       className=" pl-2 w-full outline-none border-none"
                       type="email"
