@@ -93,7 +93,8 @@ export default function App({ Component, pageProps }) {
               >
                 <div className="flex items-center justify-center">
                   {notifications.length !== 0 && (
-                    <BellIcon size={24} color="#EC255A" />
+                    <>notification</>
+                    // <BellIcon size={24} color="#EC255A" />
                   )}
                   <p> الإشعارات</p>
                 </div>
