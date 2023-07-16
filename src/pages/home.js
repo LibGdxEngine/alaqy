@@ -296,7 +296,14 @@ const Home = () => {
                 name="file"
                 type="file"
               />{" "}
-              {fileData && <Image width={500} height={500} src={fileData} alt="Uploaded file" />}
+              {fileData && (
+                <Image
+                  width={500}
+                  height={500}
+                  src={fileData}
+                  alt="Uploaded file"
+                />
+              )}
             </div>
             <div class="mb-4">
               <label
@@ -395,14 +402,6 @@ const Home = () => {
                       link={`/chat/${message.privateRoom}`}
                     />
                   </div>
-                );
-                return (
-                  <Article
-                    title={`assssssss${message.price}`}
-                    img={article4}
-                    date={`April 22, 2023`}
-                    link={`/`}
-                  />
                 );
               })}
           </ul>
