@@ -296,7 +296,7 @@ const Home = () => {
                 name="file"
                 type="file"
               />{" "}
-              {fileData && <img src={fileData} alt="Uploaded file" />}
+              {fileData && <Image width={500} height={500} src={fileData} alt="Uploaded file" />}
             </div>
             <div class="mb-4">
               <label
