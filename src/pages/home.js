@@ -394,9 +394,8 @@ const Home = () => {
             {messages &&
               messages.map((message) => {
                 return (
-                  <div dir="rtl">
+                  <div dir="rtl" key={message._id}>
                     <OfferItem
-                      key={message._id}
                       notificationId={message._id}
                       title={`${message.description} بسعر ${message.price}`}
                       link={`/chat/${message.privateRoom}`}
