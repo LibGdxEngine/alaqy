@@ -140,7 +140,7 @@ const Home = () => {
   const [requestDescription, setRequestDescription] = useState("");
   const [requestCategory, setRequestCategory] = useState("");
 
-  async function fetchRequests() {
+  const fetchRequests = useCallback(async () => {
     const user = await isAuth();
     setCurrentUser(user);
     const requestsData = await getMyRequests(user._id, token);
@@ -149,7 +149,7 @@ const Home = () => {
     setPrevRequests(requestsData);
 
     setMessages(messagesData);
-  }
+  }, []);
 
   async function fetchOffers(selectedRequest) {
     const offersData = await getMyOffers(selectedRequest, token);
@@ -159,7 +159,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchRequests();
-  },[fetchRequests]);
+  }, [fetchRequests]);
 
   const token = getCookie("token");
 
