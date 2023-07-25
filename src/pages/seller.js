@@ -144,6 +144,14 @@ const Seller = () => {
 
   const fetchRequests = useCallback(async () => {
     const user = await isAuth();
+    if (!user) {
+      router.replace("/");
+    }
+    setCurrentUser(user);
+    if (user.role !== 1) {
+      router.replace("/");
+    }
+
     setCurrentUser(user);
     const requestsData = await getMyCategoryRequests(user._id, token);
     const messagesData = await getMyPrivateRooms(user._id, token);

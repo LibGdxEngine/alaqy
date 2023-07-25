@@ -67,16 +67,20 @@ const CustomMobileLink = ({ href, title, className = "", toggle }) => {
 const Navebar = (props) => {
   const onLogoClick = props.onLogoClick;
   const router = useRouter();
-  const [userSignedIn, setUserSignedIn] = useState(false);
+  const [userSignedIn, setUserSignedIn] = useState();
   useEffect(() => {
     const fetchUser = async () => {
       const user = await isAuth();
+
       if (user) {
-        setUserSignedIn(true);
+        setUserSignedIn(user);
+      } else {
+        setUserSignedIn(false);
       }
     };
     fetchUser();
-  }, []);
+  }, [router.pathname]);
+
   const [mode, setMode] = useThemeSwitcher();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -116,11 +120,20 @@ const Navebar = (props) => {
           {!userSignedIn && (
             <CustomLink href={`/auth`} title={"تسجيل"} className="ml-4" />
           )}
-          {userSignedIn.role === 0 ? (
-            <CustomLink href={`/home`} title={"طلباتي"} className="ml-4" />
-          ) : (
-            <CustomLink href={`/seller`} title={"طلباتي"} className="ml-4" />
+          {userSignedIn && (
+            <>
+              {userSignedIn.role === 0 ? (
+                <CustomLink href={`/home`} title={"طلباتي"} className="ml-4" />
+              ) : (
+                <CustomLink
+                  href={`/seller`}
+                  title={"طلباتي"}
+                  className="ml-4"
+                />
+              )}
+            </>
           )}
+
           {/* <CustomLink href={`/projects`} title={"برامجنا"} className="mx-4" /> */}
           <CustomLink href={`/about`} title={"من نحن"} className="mx-4" />
           <CustomLink href={`/`} title={"الصفحة الرئيسية"} />
@@ -208,15 +221,27 @@ const Navebar = (props) => {
               toggle={handleClick}
             />
             {userSignedIn.role === 0 ? (
-              <CustomMobileLink href={`/home`} title={"طلباتي"} className="ml-4" />
+              <CustomMobileLink
+                href={`/home`}
+                title={"طلباتي"}
+                className="ml-4"
+              />
             ) : (
-              <CustomMobileLink href={`/seller`} title={"طلباتي"} className="ml-4" />
+              <CustomMobileLink
+                href={`/seller`}
+                title={"طلباتي"}
+                className="ml-4"
+              />
             )}
-            <CustomMobileLink
-              href={`/auth`}
-              title={"تسجيل"}
-              toggle={handleClick}
-            />
+            {!userSignedIn ? (
+              <CustomMobileLink
+                href={`/auth`}
+                title={"تسجيل"}
+                toggle={handleClick}
+              />
+            ) : (
+              ""
+            )}
           </nav>
 
           <nav className="flex items-center justify-center flex-wrap mt-2">
@@ -281,9 +306,14 @@ const Navebar = (props) => {
           </nav>
         </motion.div>
       ) : null}
-      <div className="absolute left-[50%] top-2 translate-x-[-50%] sm:top-0">
-        <Logo onClick={onLogoClick} />
-      </div>
+
+      {userSignedIn ? (
+        <div className="absolute left-[50%] top-2 translate-x-[-50%] sm:top-0">
+          <Logo onClick={onLogoClick} />
+        </div>
+      ) : (
+        ""
+      )}
     </header>
   );
 };

@@ -146,9 +146,12 @@ const Home = () => {
   const [requestName, setRequestName] = useState("");
   const fetchRequests = useCallback(async () => {
     const user = await isAuth();
+    if (!user) {
+      router.replace("/");
+    }
     setCurrentUser(user);
-    if (user.role === 1) {
-      router.replace("/seller");
+    if (user.role !== 0) {
+      router.replace("/");
     }
     const requestsData = await getMyRequests(user._id, token);
     const messagesData = await getMyPrivateRooms(user._id, token);
@@ -240,6 +243,14 @@ const Home = () => {
   const handleOpenOffersModal = () => {
     setOfferModallIsOpen(true);
   };
+
+  if (!currentUser) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <h3>جاري التحميل...</h3>
+      </div>
+    );
+  }
 
   return (
     <>
