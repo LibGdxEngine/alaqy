@@ -116,8 +116,10 @@ const Navebar = (props) => {
           {!userSignedIn && (
             <CustomLink href={`/auth`} title={"تسجيل"} className="ml-4" />
           )}
-          {userSignedIn && (
+          {userSignedIn.role === 0 ? (
             <CustomLink href={`/home`} title={"طلباتي"} className="ml-4" />
+          ) : (
+            <CustomLink href={`/seller`} title={"طلباتي"} className="ml-4" />
           )}
           {/* <CustomLink href={`/projects`} title={"برامجنا"} className="mx-4" /> */}
           <CustomLink href={`/about`} title={"من نحن"} className="mx-4" />
@@ -205,11 +207,11 @@ const Navebar = (props) => {
               title={"من نحن"}
               toggle={handleClick}
             />
-            {/* <CustomMobileLink
-              href={`/projects`}
-              title={"برامجنا"}
-              toggle={handleClick}
-            /> */}
+            {userSignedIn.role === 0 ? (
+              <CustomMobileLink href={`/home`} title={"طلباتي"} className="ml-4" />
+            ) : (
+              <CustomMobileLink href={`/seller`} title={"طلباتي"} className="ml-4" />
+            )}
             <CustomMobileLink
               href={`/auth`}
               title={"تسجيل"}

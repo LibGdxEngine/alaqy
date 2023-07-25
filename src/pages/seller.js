@@ -1,6 +1,6 @@
 import TransitionEffect from "@/components/TransitionEffect";
 import { motion, useMotionValue } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Layout from "@/components/Layout";
@@ -142,19 +142,19 @@ const Seller = () => {
   const [offerDesc, setOfferDesc] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
 
-  async function fetchRequests() {
+  const fetchRequests = useCallback(async () => {
     const user = await isAuth();
     setCurrentUser(user);
     const requestsData = await getMyCategoryRequests(user._id, token);
     const messagesData = await getMyPrivateRooms(user._id, token);
 
     setPrevRequests(requestsData);
-    setMessages(messagesData.messages);
-  }
+    setMessages(messagesData);
+  }, []);
 
   useEffect(() => {
     fetchRequests();
-  });
+  }, [fetchRequests]);
 
   const token = getCookie("token");
 
@@ -335,17 +335,18 @@ const Seller = () => {
           <h2 className="font-bold text-4xl w-full text-center my-16 mt-32">
             رسائلي السابقة
           </h2>
+
           <ul>
             {messages &&
               messages.map((message) => {
                 return (
-                  <Article
-                    key={message._id}
-                    title={`${message.price}`}
-                    img={article4}
-                    date={`April 22, 2023`}
-                    link={`/`}
-                  />
+                  <div dir="rtl" key={message._id}>
+                    <OfferItem
+                      notificationId={message._id}
+                      title={`${message.description} بسعر ${message.price}`}
+                      link={`/chat/${message.privateRoom}`}
+                    />
+                  </div>
                 );
               })}
           </ul>

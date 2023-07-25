@@ -1,5 +1,6 @@
 import TransitionEffect from "@/components/TransitionEffect";
 import { motion, useMotionValue } from "framer-motion";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -120,6 +121,7 @@ const Article = ({ img, title, date, link }) => {
 };
 
 const Home = () => {
+  const router = useRouter();
   const buttonRef = useRef(null);
   useEffect(() => {
     if (buttonRef.current) {
@@ -130,7 +132,9 @@ const Home = () => {
   }, [buttonRef]);
 
   const [prevRequests, setPrevRequests] = useState([]);
+  const [isLoadingRequests, setIslLoadingRequests] = useState(true);
   const [messages, setMessages] = useState([]);
+  const [isLoadingMessages, setIslLoadingMessages] = useState(true);
   const [offers, setOffers] = useState([]);
   const [currentUser, setCurrentUser] = useState([]);
   const [RequestModalIsOpen, setRequestModallIsOpen] = useState(false);
@@ -139,16 +143,20 @@ const Home = () => {
   const [myFile, setMyFile] = useState();
   const [requestDescription, setRequestDescription] = useState("");
   const [requestCategory, setRequestCategory] = useState("");
-
+  const [requestName, setRequestName] = useState("");
   const fetchRequests = useCallback(async () => {
     const user = await isAuth();
     setCurrentUser(user);
+    if (user.role === 1) {
+      router.replace("/seller");
+    }
     const requestsData = await getMyRequests(user._id, token);
     const messagesData = await getMyPrivateRooms(user._id, token);
 
     setPrevRequests(requestsData);
-
+    setIslLoadingRequests(false);
     setMessages(messagesData);
+    setIslLoadingMessages(false);
   }, []);
 
   async function fetchOffers(selectedRequest) {
@@ -212,6 +220,7 @@ const Home = () => {
         fileData,
         requestDescription,
         requestCategory,
+        requestName,
       },
       token
     ).then((data) => {
@@ -310,6 +319,25 @@ const Home = () => {
                 class="block text-gray-700 font-bold mb-2"
                 for="description"
               >
+                اسم المنتج الذي تبحث عنه
+              </label>
+              <input
+                class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="name"
+                name="name"
+                type="text"
+                onChange={(e) => {
+                  setRequestName(e.target.value);
+                }}
+                value={requestName}
+                placeholder="اسم المنتج..."
+              ></input>
+            </div>
+            <div class="mb-4">
+              <label
+                class="block text-gray-700 font-bold mb-2"
+                for="description"
+              >
                 اخبرنا أكثر عن ما تبحث عنه
               </label>
               <textarea
@@ -365,7 +393,20 @@ const Home = () => {
             lg:!text-7xl sm:mb-8 sm:!text-6xl xs:!text-4xl
             "
           />
-
+          {isLoadingRequests ? (
+            <div className="w-full flex items-center justify-center">
+              <h3>جاري التحميل...</h3>
+            </div>
+          ) : (
+            ""
+          )}
+          {prevRequests.length === 0 && !isLoadingRequests ? (
+            <div className="w-full flex items-center justify-center">
+              <h3>ليس لديك طلبات سابقة</h3>
+            </div>
+          ) : (
+            ""
+          )}
           <ul
             dir="rtl"
             className="grid grid-cols-3 gap-16 lg:gap-8 md:grid-cols-1 md:gap-y-16"
@@ -375,7 +416,7 @@ const Home = () => {
                 return (
                   <FeaturedArticle
                     key={request._id}
-                    title={`${request.requestCategory}`}
+                    title={`${request.requestName}`}
                     time={`${new Date(request.createdAt).toLocaleString()}`}
                     summary={`${request.requestDesc}`}
                     img={request.requestPhoto}
@@ -390,6 +431,20 @@ const Home = () => {
           <h2 className="font-bold text-4xl w-full text-center my-16 mt-32">
             رسائلي السابقة
           </h2>
+          {isLoadingMessages ? (
+            <div className="w-full flex items-center justify-center">
+              <h3>جاري التحميل...</h3>
+            </div>
+          ) : (
+            ""
+          )}
+          {messages.length === 0 && !isLoadingMessages ? (
+            <div className="w-full flex items-center justify-center">
+              <h3>ليس لديك رسائل سابقة</h3>
+            </div>
+          ) : (
+            ""
+          )}
           <ul>
             {messages &&
               messages.map((message) => {
