@@ -7,7 +7,8 @@ import socketIO from "socket.io-client";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { isAuth } from "@/actions/auth";
-const socket = socketIO.connect(`localhost:8000`);
+import { API } from "../../../config";
+const socket = socketIO.connect(`${API}`);
 
 const Chat = () => {
   const router = useRouter();
